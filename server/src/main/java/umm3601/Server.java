@@ -2,15 +2,21 @@ package umm3601;
 
 import java.io.IOException;
 
+
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import umm3601.user.Database;
 import umm3601.user.UserController;
+import umm3601.todos.TodoController;
+import umm3601.todos.tDatabase;
+
 
 public class Server {
 
   public static final String CLIENT_DIRECTORY = "../client";
   public static final String USER_DATA_FILE = "/users.json";
+  public static final String TODO_DATA_FILE = "/todo.json";
+
   private static Database userDatabase;
 
   public static void main(String[] args) {
@@ -39,6 +45,8 @@ public class Server {
 
     // List users, filtered using query parameters
     server.get("/api/users", ctx -> userController.getUsers(ctx));
+    server.get("/api/todo", ctx -> userController.getTodos(ctx));
+
   }
 
   /***
