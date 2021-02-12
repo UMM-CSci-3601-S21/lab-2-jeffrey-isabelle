@@ -15,14 +15,17 @@ public class Server {
 
   public static final String CLIENT_DIRECTORY = "../client";
   public static final String USER_DATA_FILE = "/users.json";
-  public static final String TODO_DATA_FILE = "/todo.json";
+  public static final String TODO_DATA_FILE = "/todos.json";
+
 
   private static Database userDatabase;
+  private static tDatabase todoDatabase;
 
   public static void main(String[] args) {
 
     // Initialize dependencies
     UserController userController = buildUserController();
+    TodoController todoController = buildTodoController();
 
     Javalin server = Javalin.create(config -> {
       // This tells the server where to look for static files,
@@ -45,7 +48,7 @@ public class Server {
 
     // List users, filtered using query parameters
     server.get("/api/users", ctx -> userController.getUsers(ctx));
-    server.get("/api/todo", ctx -> userController.getTodos(ctx));
+    server.get("/api/todos", ctx -> todoController.getTodos(ctx));
 
   }
 
@@ -57,8 +60,27 @@ public class Server {
    * reading from the JSON "database" file. If that happens we'll print out an
    * error message exit the program.
    */
+
+  private static TodoController buildTodoController(){
+    TodoController todoController = null;
+
+    try {
+      todoDatabase = new tDatabase(TODO_DATA_FILE);
+      todoController = new TodoController(todoDatabase);
+    } catch (IOException e) {
+      System.err.println("The server failed to load the todo data; shutting down.");
+      e.printStackTrace(System.err);
+
+      // Exit from the Java program
+      System.exit(1);
+    }
+
+    return todoController;
+  }
+
   private static UserController buildUserController() {
     UserController userController = null;
+
 
     try {
       userDatabase = new Database(USER_DATA_FILE);

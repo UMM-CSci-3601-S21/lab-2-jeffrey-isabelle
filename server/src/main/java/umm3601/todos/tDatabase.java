@@ -13,25 +13,25 @@ import io.javalin.http.BadRequestResponse;
 public class tDatabase {
 
 
-  private Todos[] allTodos;
+  private Todo[] allTodo;
 
   public tDatabase(String todoDataFile) throws IOException {
     Gson gson = new Gson();
     InputStreamReader reader = new InputStreamReader(getClass().getResourceAsStream(todoDataFile));
-    allTodos = gson.fromJson(reader, Todos[].class);
+    allTodo = gson.fromJson(reader, Todo[].class);
   }
 
   public int size() {
-    return allTodos.length;
+    return allTodo.length;
   }
 
-  public Todos getTodos(String id) {
-    return Arrays.stream(allTodos).filter(x -> x._id.equals(id)).findFirst().orElse(null);
+  public Todo getTodo(String id) {
+    return Arrays.stream(allTodo).filter(x -> x._id.equals(id)).findFirst().orElse(null);
   }
 
-  public Todos[] listTodos(){
-    Todos[] filteredTodos = allTodos;
-    return filteredTodos;
+  public Todo[] listTodos(Map<String, List<String>> queryParams){
+    Todo[] filteredTodo = allTodo;
+    return filteredTodo;
   }
 
 }
