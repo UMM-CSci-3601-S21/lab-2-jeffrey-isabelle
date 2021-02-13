@@ -29,18 +29,35 @@ public class tDatabase {
     return Arrays.stream(allTodo).filter(x -> x._id.equals(id)).findFirst().orElse(null);
   }
 
+  //The main filter methods
+
   public Todo[] listTodos(Map<String, List<String>> queryParams){
     Todo[] filteredTodo = allTodo;
 
+
+    //Filter by category
     if (queryParams.containsKey("category")) {
       String targetCategory = queryParams.get("category").get(0);
       filteredTodo = filterTodosByCategory(filteredTodo, targetCategory);
     }
+
+    //Filter by owner
+    if (queryParams.containsKey("owner")) {
+      String targetOwner = queryParams.get("owner").get(0);
+      filteredTodo = filterTodosByOwner(filteredTodo, targetOwner);
+    }
+
     return filteredTodo;
   }
 
+  // Filter methods
+
   public Todo[] filterTodosByCategory(Todo[] todo, String targetCategory) {
     return Arrays.stream(todo).filter(x -> x.category.equals(targetCategory)).toArray(Todo[]::new);
+  }
+
+  public Todo[] filterTodosByOwner(Todo[] todo, String targetOwner) {
+    return Arrays.stream(todo).filter(x -> x.owner.equals(targetOwner)).toArray(Todo[]::new);
   }
 
 }
