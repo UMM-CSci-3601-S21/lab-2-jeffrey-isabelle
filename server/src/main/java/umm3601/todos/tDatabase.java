@@ -29,7 +29,9 @@ public class tDatabase {
     return Arrays.stream(allTodo).filter(x -> x._id.equals(id)).findFirst().orElse(null);
   }
 
-  //The main filter methods
+
+
+  //The main filter method
 
   public Todo[] listTodos(Map<String, List<String>> queryParams){
     Todo[] filteredTodo = allTodo;
@@ -47,8 +49,16 @@ public class tDatabase {
       filteredTodo = filterTodosByOwner(filteredTodo, targetOwner);
     }
 
+    //Filter by status
+    if (queryParams.containsKey("status")) {
+      boolean targetStatus = getBoolFromStatus(queryParams.get("status").get(0));
+      filteredTodo = filterTodosByStatus(filteredTodo, targetStatus);
+    }
+
     return filteredTodo;
   }
+
+
 
   // Filter methods
 
@@ -60,4 +70,22 @@ public class tDatabase {
     return Arrays.stream(todo).filter(x -> x.owner.equals(targetOwner)).toArray(Todo[]::new);
   }
 
+  public Todo[] filterTodosByStatus(Todo[] todo, boolean targetStatus) {
+    return Arrays.stream(todo).filter(x -> x.status == (targetStatus)).toArray(Todo[]::new);
+  }
+
+
+  //method for converting string to bool
+  public boolean getBoolFromStatus(String str){
+    boolean stat;
+
+    if(str.equals("complete")){
+      stat = true;
+    }
+    else{
+      stat = false;
+    }
+
+    return stat;
+  }
 }
