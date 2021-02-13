@@ -31,7 +31,16 @@ public class tDatabase {
 
   public Todo[] listTodos(Map<String, List<String>> queryParams){
     Todo[] filteredTodo = allTodo;
+
+    if (queryParams.containsKey("category")) {
+      String targetCategory = queryParams.get("category").get(0);
+      filteredTodo = filterTodosByCategory(filteredTodo, targetCategory);
+    }
     return filteredTodo;
+  }
+
+  public Todo[] filterTodosByCategory(Todo[] todo, String targetCategory) {
+    return Arrays.stream(todo).filter(x -> x.category.equals(targetCategory)).toArray(Todo[]::new);
   }
 
 }
