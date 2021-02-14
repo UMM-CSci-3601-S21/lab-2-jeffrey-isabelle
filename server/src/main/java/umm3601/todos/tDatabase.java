@@ -3,6 +3,7 @@ package umm3601.todos;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +32,8 @@ public class tDatabase {
 
 
 
-  //The main filter method
-
+  //The main listing method
+  @SuppressWarnings("all")
   public Todo[] listTodos(Map<String, List<String>> queryParams){
     Todo[] filteredTodo = allTodo;
 
@@ -57,8 +58,13 @@ public class tDatabase {
 
     //Filter by included word
     if (queryParams.containsKey("contains")) {
-      String targetBody = queryParams.get("contains").get(0);
-      filteredTodo = filterTodosByBody(filteredTodo, targetBody);
+      String targetContains = queryParams.get("contains").get(0);
+      filteredTodo = filterTodosByBody(filteredTodo, targetContains);
+    }
+
+    if (queryParams.containsKey("orderBy")) {
+      String targetOrder = queryParams.get("orderBy").get(0);
+      filteredTodo = sortedTodos(filteredTodo, targetOrder);
     }
 
     return filteredTodo;
@@ -98,5 +104,51 @@ public class tDatabase {
     }
 
     return stat;
+  }
+
+  public Todo[] sortedTodos(Todo[] todos, String str){
+    Todo[] sortedTodos = todos;
+
+    switch(str) {
+
+      case "owner":
+        Arrays.sort(sortedTodos, new Comparator<Todo>() {
+          @Override
+          public int compare(Todo u1, Todo u2) {
+            return u1.owner.compareTo(u2.owner);
+        }
+      });
+      break;
+      case "status":
+        Arrays.sort(sortedTodos, new Comparator<Todo>() {
+          @Override
+          public int compare(Todo u1, Todo u2) {
+            return Boolean.toString(u1.status).compareTo(Boolean.toString(u2.status));
+      }
+      });
+      break;
+      case "category":
+        Arrays.sort(sortedTodos, new Comparator<Todo>() {
+          @Override
+          public int compare(Todo u1, Todo u2) {
+            return u1.category.compareTo(u2.category);
+      }
+      });
+      break;
+      case "body":
+        Arrays.sort(sortedTodos, new Comparator<Todo>() {
+          @Override
+          public int compare(Todo u1, Todo u2) {
+            return u1.body.compareTo(u2.body);
+      }
+      });
+      break;
+
+      default:
+
+      throw new BadRequestResponse("Not Valid.");
+
+    }
+    return sortedTodos;
   }
 }
