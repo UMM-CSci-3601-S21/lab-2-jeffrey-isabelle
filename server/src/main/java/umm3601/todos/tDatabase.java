@@ -67,6 +67,18 @@ public class tDatabase {
       filteredTodo = sortedTodos(filteredTodo, targetOrder);
     }
 
+    //Limit the number of todo displayed
+    if (queryParams.containsKey("limit")){
+      String targetParam = queryParams.get("limit").get(0);
+      try{
+        int targetLimit = Integer.parseInt(targetParam);
+        filteredTodo = filterTodosByLimit(filteredTodo, targetLimit);
+      }
+      catch (NumberFormatException e){
+        throw new BadRequestResponse("Specified status '" + targetParam + "' can't be parsed to an integer");
+      }
+    }
+
     return filteredTodo;
   }
 
@@ -88,6 +100,10 @@ public class tDatabase {
 
   public Todo[] filterTodosByBody(Todo[] todo, String targetBody) {
     return Arrays.stream(todo).filter(x -> x.body.contains(targetBody)).toArray(Todo[]::new);
+  }
+
+  public Todo[] filterTodosByLimit(Todo[] todo, int targetLimit) {
+    return Arrays.copyOfRange(todo, 0, targetLimit);
   }
 
 
